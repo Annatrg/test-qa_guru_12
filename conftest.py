@@ -9,7 +9,6 @@ from utils import attach
 import os
 from dotenv import load_dotenv
 
-
 DEFAULT_BROWSER_VERSION = "100.0"
 
 
@@ -24,11 +23,11 @@ def pytest_addoption(parser):
 def load_env():
     load_dotenv()
 
+
 @pytest.fixture(scope='function')
 def setup_browser(request):
-    browser_version = request.config.getoption('--browser-version')
-    browser_version = browser_version if browser_version != '' else DEFAULT_BROWSER_VERSION
-
+    browser_version = request.config.getoption('--browser_version')
+    browser_version = browser_version if browser_version != "" else DEFAULT_BROWSER_VERSION
     options = Options()
     selenoid_capabilities = {
         "browserName": "chrome",
@@ -47,13 +46,12 @@ def setup_browser(request):
         command_executor=f"https://{login}:{password}@selenoid.autotests.cloud/wd/hub",
         options=options
     )
-
     browser = Browser(Config(driver))
+
     yield browser
 
+    attach.add_html(browser)
     attach.add_screenshot(browser)
     attach.add_logs(browser)
-    attach.add_html(browser)
     attach.add_video(browser)
-
     browser.quit()
